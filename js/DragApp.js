@@ -31,6 +31,7 @@ export default class DragArea extends Component {
                     x: 0,
                     y: 0
                 });
+                this.setState({colour: DragArea._getRandomColour()});
             },
 
             onPanResponderMove: Animated.event([
@@ -87,7 +88,7 @@ export default class DragArea extends Component {
         Animated.spring(this.state.pan, {
             toValue: {x: 0, y: 0},
             friction: 4
-        }).start(() => this.setState({colour: DragArea._getRandomColour()}));
+        }).start();
     }
 
     /**
@@ -95,7 +96,13 @@ export default class DragArea extends Component {
      * for the drag target
      */
     static _getRandomColour() {
-        return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++ ) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+
+        return color;
     }
 }
 
