@@ -9,7 +9,6 @@ import {
     Navigator
 } from 'react-native';
 
-import HelloScene from './components/HelloScene';
 import DragApp from './js/DragApp';
 
 export default class ReactNativeDragDemo extends Component {
