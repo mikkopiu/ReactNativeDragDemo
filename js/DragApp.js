@@ -8,21 +8,12 @@ import {
 } from 'react-native';
 import clamp from 'clamp';
 
-const People = [
-    'red',
-    'green',
-    'blue',
-    'purple'
-];
-
-const SWIPE_THRESHOLD = 120;
-
 export default class DragArea extends Component {
     constructor(props) {
         super(props);
         this.state = {
             pan: new Animated.ValueXY(),
-            person: People[0]
+            colour: DragArea._getRandomColour()
         };
     }
 
@@ -56,17 +47,7 @@ export default class DragArea extends Component {
                     velocity = clamp(vx * -1, 3, 5) * -1;
                 }
 
-                if (Math.abs(this.state.pan.x._value) > SWIPE_THRESHOLD) {
-                    Animated.decay(this.state.pan, {
-                        velocity: {x: velocity, y: vy},
-                        deceleration: 0.98
-                    }).start(() => this._resetState());
-                } else {
-                    Animated.spring(this.state.pan, {
-                        toValue: {x: 0, y: 0},
-                        friction: 4
-                    }).start();
-                }
+                this._resetState();
             }
         })   
     }
@@ -80,45 +61,40 @@ export default class DragArea extends Component {
             inputRange: [-200, 0, 200],
             outputRange: ['-30deg', '0deg', '30deg']
         });
-        let opacity = pan.x.interpolate({
-            inputRange: [-200, 0, 200],
-            outputRange: [0.5, 1, 0.5]
-        });
 
-        let animatedCardStyles = {
+        let animatedTargetStyles = {
             transform: [
                 {translateX},
                 {translateY},
                 {rotate}
-            ],
-            opacity
+            ]
         };
 
         return (
             <View style={styles.container}>
-                <Animated.View style={[styles.card, animatedCardStyles, {backgroundColor: this._getRandomColour()}]} {...this._panResponder.panHandlers} />
+                <Animated.View
+                    style={[
+                        styles.dragTarget,
+                        animatedTargetStyles,
+                        {backgroundColor: this.state.colour}
+                    ]}
+                    {...this._panResponder.panHandlers} />
             </View>
         );
     }
 
-    _goToNextPerson() {
-        let currentPersonInd = People.indexOf(this.state.person);
-        let newInd = currentPersonInd + 1;
-
-        this.setState({
-            person: People[newInd > People.length - 1 ? 0 : newInd]
-        });
-    }
-
     _resetState() {
-        this.state.pan.setValue({
-            x: 0,
-            y: 0
-        });
-        this._goToNextPerson();
+        Animated.spring(this.state.pan, {
+            toValue: {x: 0, y: 0},
+            friction: 4
+        }).start(() => this.setState({colour: DragArea._getRandomColour()}));
     }
 
-    _getRandomColour() {
+    /**
+     * Get random hex colour
+     * for the drag target
+     */
+    static _getRandomColour() {
         return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
     }
 }
@@ -130,7 +106,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'transparent',
     },
-    card: {
+    dragTarget: {
         width: 200,
         height: 200,
         backgroundColor: 'red',
