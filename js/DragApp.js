@@ -96,7 +96,7 @@ export default class DragArea extends Component {
 
         return (
             <View style={styles.container}>
-                <Animated.View style={[styles.card, animatedCardStyles, {backgroundColor: this.state.person}]} {...this._panResponder.panHandlers} />
+                <Animated.View style={[styles.card, animatedCardStyles, {backgroundColor: this._getRandomColour()}]} {...this._panResponder.panHandlers} />
             </View>
         );
     }
@@ -117,6 +117,16 @@ export default class DragArea extends Component {
         });
         this._goToNextPerson();
     }
+
+    _getRandomColour() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++ ) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+
+        return color;
+    }
 }
 
 const styles = StyleSheet.create({
@@ -124,7 +134,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F5FCFF',
+        backgroundColor: 'transparent',
     },
     card: {
         width: 200,
