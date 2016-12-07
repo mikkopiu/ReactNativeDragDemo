@@ -10,3 +10,4 @@ and a running Android device (emulator or real through adb).
 ```shell
 react-native run-android
 ```
+
