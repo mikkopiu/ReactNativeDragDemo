@@ -94,6 +94,7 @@ export default class DragArea extends Component {
     /**
      * Get random hex colour
      * for the drag target
+     * @returns {String} Random colour hex code
      */
     static _getRandomColour() {
         const letters = '0123456789ABCDEF';
